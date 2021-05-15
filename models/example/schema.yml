@@ -1,21 +1,93 @@
 
 version: 2
 
-models:
-    - name: my_first_dbt_model
-      description: "A starter dbt model"
-      columns:
-          - name: id
-            description: "The primary key for this table"
-            tests:
-                - unique
-                - not_null
+sources:
+  - name: imdb
+    database: imdb
+    schema: public
+    tables:
+      - name: actor_sample
+      - name: cast_sample
+      - name: movie_sample
+      - name: movie_info_sample
+      - name: info_type
+      - name: role_type
 
-    - name: my_second_dbt_model
-      description: "A starter dbt model"
+models:
+    - name: info_available
+      description: "List of info_type that are available for the current analysis"
+      columns:
+          - name: info
+            description: "The types of info that are available for our analysis"
+
+    - name: clean_budget
+      description: "Extract the dollar amount of budget as an float for all movies with gross earnings counted in the USA"
+      columns:
+          - name: budget
+            description: "The dollar amount of budget of the film"
+          - name: movie_id
+            description: "The id for the movie"
+          - name: title
+            description: "Title of the film"
+          - name: production_year
+
+    - name: clean_gross
+      description: "Extract the dollar amount of gross as an float for all movies with gross earnings counted in the USA"
+      columns:
+          - name: gross
+            description: "The dollar amount of gross of the film"
+          - name: movie_id
+            description: "The id for the movie"
+          - name: title
+            description: "Title of the film"
+
+    - name: clean_profit
+      description: "Calculate the dollar amount of profit as an float for all movies with gross earnings counted in the USA"
+      columns:
+          - name: profit
+            description: "The dollar amount of profit of the film"
+          - name: movie_id
+            description: "The id for the movie"
+          - name: title
+            description: "Title of the film"
+          - name: production_year
+
+
+    - name: cast_profit
+      description: "Calculate for each actor the average profit of all movies that he/she featured in"
       columns:
           - name: id
-            description: "The primary key for this table"
-            tests:
-                - unique
-                - not_null
+            description: "The id of the actor from the actor_sample table"
+          - name: name
+            description: "The name of the actor"
+          - name: gender
+          - name: avg_profit
+          - name: latest_year
+
+    - name: actor_info
+      description: "Calculate the number of movies each actor was featured in"
+      columns:
+          - name: person_id
+          - name: name
+          - name: number
+            description : "Number of movie the actor featured in"
+
+    - name: actor_most_profitable
+      description: "Each actor and the profit of the most profitable movie that they featured in"
+      columns:
+          - name: person_id
+          - name: name
+          - name: gender
+          - name: most_profit
+
+    - name: year_profit
+      description: "Average profit of movies produced each year"
+      columns:
+          - name: production_year
+          - name: avg_profit
+
+    - name: profit_trend_over_year
+      description: "The difference between average profit of movies produced each year"
+      columns:
+          - name: production_year
+          - name: profit_diff
